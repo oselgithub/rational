@@ -1,4 +1,5 @@
 use std::ops::Add;
+use std::ops::Mul;
 use std::ops::Sub;
 use std::string::ToString;
 
@@ -79,6 +80,27 @@ impl Sub<Rational> for i32 {
   }
 }
 
+impl Mul for Rational {
+  type Output = Rational;
+  fn mul(self, rhs: Rational) -> Self::Output {
+    Rational::new(self.n * rhs.n, self.d * rhs.d)
+  }
+}
+
+impl Mul<i32> for Rational {
+  type Output = Rational;
+  fn mul(self, rhs: i32) -> Self::Output {
+    Rational::new(self.n * rhs, self.d)
+  }
+}
+
+impl Mul<Rational> for i32 {
+  type Output = Rational;
+  fn mul(self, rhs: Rational) -> Self::Output {
+    rhs * self
+  }
+}
+
 #[test]
 fn new_test() {
   assert_eq!("1/3", Rational::new(1, 3).to_string());
@@ -116,4 +138,19 @@ fn sub_test() {
   assert_eq!("2/3", res2.to_string());
   assert_eq!("-7/6", res3.to_string());
   assert_eq!("-1/9", res4.to_string());
+}
+
+#[test]
+fn mul_test() {
+  let instance1 = Rational::new(1, 3);
+  let instance2 = Rational::new(3, 2);
+  let instance3 = Rational::new(4, 9);
+  let res1 = instance1 * 2;
+  let res2 = 2 * instance1;
+  let res3 = instance1 * instance2;
+  let res4 = instance1 * instance3;
+  assert_eq!("2/3", res1.to_string());
+  assert_eq!("2/3", res2.to_string());
+  assert_eq!("1/2", res3.to_string());
+  assert_eq!("4/27", res4.to_string());
 }
