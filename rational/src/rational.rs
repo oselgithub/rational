@@ -10,7 +10,7 @@ pub struct Rational {
 
 impl Rational {
   fn gcd(a: i32, b: i32) -> i32 {
-    if(b == 0) {
+    if b == 0 {
 			a
     }
     else {
@@ -19,7 +19,9 @@ impl Rational {
   }
   
   pub fn new(n: i32, d: i32) -> Rational {
-    let g = Rational::gcd(n.abs(), d.abs());
+    let n = if d < 0 { -n } else { n };
+    let d = d.abs();
+    let g = Rational::gcd(n.abs(), d);
     Rational {
       n: n / g,
       d: d / g,
@@ -73,7 +75,7 @@ impl Sub<i32> for Rational {
 impl Sub<Rational> for i32 {
   type Output = Rational;
   fn sub(self, rhs: Rational) -> Self::Output {
-    rhs - self
+    Rational::new(rhs.d * self - rhs.n, rhs.d)
   }
 }
 
@@ -81,6 +83,9 @@ impl Sub<Rational> for i32 {
 fn new_test() {
   assert_eq!("1/3", Rational::new(1, 3).to_string());
   assert_eq!("1/3", Rational::new(6, 18).to_string());
+  assert_eq!("1/3", Rational::new(-6, -18).to_string());
+  assert_eq!("-1/3", Rational::new(6, -18).to_string());
+  assert_eq!("-1/3", Rational::new(-6, 18).to_string());
 }
 
 #[test]
@@ -105,10 +110,10 @@ fn sub_test() {
   let instance3 = Rational::new(4, 9);
   let res1 = instance1 - 1;
   let res2 = 1 - instance1;
-  let res3 = instance1 + instance2;
-  let res4 = instance1 + instance3;
-  assert_eq!("4/3", res1.to_string());
-  assert_eq!("4/3", res2.to_string());
-  assert_eq!("11/6", res3.to_string());
-  assert_eq!("7/9", res4.to_string());
+  let res3 = instance1 - instance2;
+  let res4 = instance1 - instance3;
+  assert_eq!("-2/3", res1.to_string());
+  assert_eq!("2/3", res2.to_string());
+  assert_eq!("-7/6", res3.to_string());
+  assert_eq!("-1/9", res4.to_string());
 }
