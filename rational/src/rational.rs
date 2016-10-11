@@ -1,5 +1,6 @@
 use std::ops::Add;
 use std::ops::Mul;
+use std::ops::Neg;
 use std::ops::Sub;
 use std::string::ToString;
 
@@ -101,6 +102,13 @@ impl Mul<Rational> for i32 {
   }
 }
 
+impl Neg for Rational {
+  type Output = Rational;
+  fn neg(self) -> Self::Output {
+    Rational::new(-self.n, self.d)
+  }
+}
+
 #[test]
 fn new_test() {
   assert_eq!("1/3", Rational::new(1, 3).to_string());
@@ -153,4 +161,14 @@ fn mul_test() {
   assert_eq!("2/3", res2.to_string());
   assert_eq!("1/2", res3.to_string());
   assert_eq!("4/27", res4.to_string());
+}
+
+#[test]
+fn neg_test() {
+  let instance1 = Rational::new(1, 3);
+  let instance2 = Rational::new(1, -3);
+  let res1 = -instance1;
+  let res2 = -instance2;
+  assert_eq!("-1/3", res1.to_string());
+  assert_eq!("1/3", res2.to_string());
 }
